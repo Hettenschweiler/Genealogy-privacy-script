@@ -1,0 +1,37 @@
+import re
+
+print("genealogical privacy script")
+print("----------------------------")
+print("made by Hettenschweiler")
+print("")
+
+# input original file here
+input_file = input(": ")
+
+# Read the file content
+with open(input_file, 'r', errors='ignore') as file:
+    lines = file.readlines()
+
+# Processing
+processed_lines = []
+note_flag = False
+
+for line in lines:
+    if '1 NOTE' in line or "1 SOUR" in line:
+        processed_line = re.sub(r'(1 NOTE|1 SOUR).*', r'\1', line)
+        processed_lines.append(processed_line)
+        note_flag = True
+    elif note_flag and ('CONC' in line or 'CONT' in line):
+        processed_line = re.sub(r'(CONC|CONT).*', r'\1', line)
+        processed_lines.append(processed_line)
+    else:
+        processed_lines.append(line)
+        note_flag = False
+
+# Writing into new file
+output_file = 'output.ged'
+with open(output_file, 'w') as file:
+    file.writelines(processed_lines)
+
+print("")
+print(f"file was created as '{output_file}'.")
